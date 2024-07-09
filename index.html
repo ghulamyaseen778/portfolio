@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Three.js Text Animation</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #000;
+      }
+      #info {
+        position: absolute;
+        top: 10px;
+        width: 100%;
+        text-align: center;
+        color: #fff;
+        font-family: sans-serif;
+        font-size: 16px;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="info">GHULAM YASEEN<br />Coming Soon</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/libs/helvetiker_regular.typeface.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/FontLoader.js"></script>
+    <!-- <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script> -->
+    <script src="https://82mou.github.io/threejs/js/OrbitControls.js"></script>
+    <script>
+      // Set up scene, camera, and renderer
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // Add OrbitControls for better view control
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+
+      // Create text
+      const loader = new THREE.FontLoader();
+      loader.load(
+        "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json",
+        function (font) {
+          const textGeometry1 = new THREE.TextGeometry("GHULAM YASEEN", {
+            font: font,
+            size: 1,
+            height: 0.1,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 0.05,
+            bevelSize: 0.05,
+            bevelOffset: 0,
+            bevelSegments: 5,
+          });
+          const textMaterial1 = new THREE.MeshPhongMaterial({
+            color: 0xff0000,
+          });
+          const mesh1 = new THREE.Mesh(textGeometry1, textMaterial1);
+          mesh1.position.set(-4.5, 1, 0);
+          scene.add(mesh1);
+
+          const textGeometry2 = new THREE.TextGeometry("Coming Soon", {
+            font: font,
+            size: 0.5,
+            height: 0.1,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 0.05,
+            bevelSize: 0.05,
+            bevelOffset: 0,
+            bevelSegments: 5,
+          });
+          const textMaterial2 = new THREE.MeshPhongMaterial({
+            color: 0x00ff00,
+          });
+          const mesh2 = new THREE.Mesh(textGeometry2, textMaterial2);
+          mesh2.position.set(-3, -1, 0);
+          scene.add(mesh2);
+
+          // Animation
+          function animateText() {
+            requestAnimationFrame(animateText);
+            mesh1.rotation.y += 0.01;
+            mesh2.rotation.y -= 0.01;
+            renderer.render(scene, camera);
+          }
+          animateText();
+        }
+      );
+
+      // Add light
+      const light = new THREE.PointLight(0xffffff, 1, 100);
+      light.position.set(10, 10, 10);
+      scene.add(light);
+
+      const ambientLight = new THREE.AmbientLight(0x404040);
+      scene.add(ambientLight);
+
+      // Set camera position
+      camera.position.z = 5;
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Handle window resize
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+  </body>
+</html>
